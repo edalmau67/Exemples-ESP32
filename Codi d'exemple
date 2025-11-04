@@ -1,20 +1,10 @@
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/gpio.h"
+void setup() {
+  pinMode(2, OUTPUT); // Configura el pin GPIO 2 como salida
+}
 
-#define LED_GPIO GPIO_NUM_2  // Pin on connectem el LED
-
-void app_main(void) {
-    // Configurem el GPIO com sortida
-    gpio_pad_select_gpio(LED_GPIO);
-    gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT);
-
-    while (1) {
-        // Encén el LED
-        gpio_set_level(LED_GPIO, 1);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-
-        // Apaga el LED
-        gpio_set_level(LED_GPIO, 0);
-        vTaskDelay(
+void loop() {
+  digitalWrite(2, HIGH); // Enciende el LED
+  delay(500);            // Espera medio segundo
+  digitalWrite(2, LOW);  // Apaga el LED
+  delay(500);            // Espera medio segundo
+}
