@@ -1,8 +1,8 @@
 
 
 const int LED_PIN = 23;               // Pin del LED
-const int TEMPS_ENCES = 500;         // Temps que el LED triga en encendre 
-const int TEMPS_APAGAT = 1500;       // Temps que el LED triga en apagar
+const int TEMPS_ENCES = 666;         // Temps que el LED triga en encendre 
+const int TEMPS_APAGAT = 1676;       // Temps que el LED triga en apagar
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);          // Configurem el pin com a sortida
