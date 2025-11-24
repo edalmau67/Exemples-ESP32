@@ -1,59 +1,42 @@
-#define BUTTON_PIN 13  // GIOP21 pin connected to button
-#define DEBOUNCE_TIME  50 // the debounce time in millisecond, increase this time if it still chatters
+#define BUTTON_PIN 13   // El botó està connectat a aquest pin
+#define DEBOUNCE_TIME 50 // Temps de delay del botó en milisegons
 
+int lastSteadyState = HIGH;       // Estat estable anterior
+int lastFlickerableState = HIGH;  // Estat temporal anterior
+int currentState;                 // Estat actual
 
-// Variables will change:
-int lastSteadyState = LOW;       // the previous steady state from the input pin
-int lastFlickerableState = LOW;  // the previous flickerable state from the input pin
-int currentState;                // the current reading from the input pin
-
-
-// the following variables are unsigned longs because the time, measured in
-// milliseconds, will quickly become a bigger number than can be stored in an int.
-unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-
+unsigned long lastDebounceTime = 0;  
+int counter = 0; // Comptador de pulsacions
 
 void setup() {
- // initialize serial communication at 9600 bits per second:
- Serial.begin(9600);
- // initialize the pushbutton pin as an pull-up input
- // the pull-up input pin will be HIGH when the switch is open and LOW when the switch is closed.
- pinMode(BUTTON_PIN, INPUT_PULLUP);
+  Serial.begin(9600);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
 
+// Funció que comprova si el botó ha estat premut
+bool buttonPressed() {
+  currentState = digitalRead(BUTTON_PIN);
+
+  if (currentState != lastFlickerableState) {
+    lastDebounceTime = millis();
+    lastFlickerableState = currentState;
+  }
+
+  if ((millis() - lastDebounceTime) > DEBOUNCE_TIME) {
+    if (lastSteadyState != currentState) {
+      lastSteadyState = currentState;
+
+      // Retorna true si el botó està premut (LOW amb INPUT_PULLUP)
+      return (currentState == LOW);
+    }
+  }
+  return false;
+}
 
 void loop() {
- // read the state of the switch/button:
- currentState = digitalRead(BUTTON_PIN);
-
-
- // check to see if you just pressed the button
- // (i.e. the input went from LOW to HIGH), and you've waited long enough
- // since the last press to ignore any noise:
-
-
- // If the switch/button changed, due to noise or pressing:
- if (currentState != lastFlickerableState) {
-   // reset the debouncing timer
-   lastDebounceTime = millis();
-   // save the the last flickerable state
-   lastFlickerableState = currentState;
- }
-
-
- if ((millis() - lastDebounceTime) > DEBOUNCE_TIME) {
-   // whatever the reading is at, it's been there for longer than the debounce
-   // delay, so take it as the actual current state:
-
-
-   // if the button state has changed:
-   if(lastSteadyState == HIGH && currentState == LOW)
-     Serial.println("The button is pressed");
-   else if(lastSteadyState == LOW && currentState == HIGH)
-     Serial.println("The button is released");
-
-
-   // save the the last steady state
-   lastSteadyState = currentState;
- }
+  if (buttonPressed()) {
+    counter++; // incrementa el comptador
+    Serial.print("Botó premut! Comptador: ");
+    Serial.println(counter);
+  }
 }
