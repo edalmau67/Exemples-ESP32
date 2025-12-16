@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-const char* ssid = "NOM_DE_LA_WIFI";
-const char* password = "CONTRASENYA_WIFI";
+const char* ssid = "iPhone de Dalmau";
+const char* password = "Dalmau34";
 
 WebServer server(80);
 
@@ -23,23 +23,27 @@ void handleRoot() {
 
 void handleOn() {
   digitalWrite(ledPin, HIGH);
+  Serial.println("LED ENCENDIDO");
   server.sendHeader("Location", "/");
   server.send(303);
 }
 
 void handleOff() {
   digitalWrite(ledPin, LOW);
+  Serial.println("LED APAGADO");
   server.sendHeader("Location", "/");
   server.send(303);
 }
 
 void handleBlink() {
+  Serial.println("LED PARPADEANDO...");
   for (int i = 0; i < 5; i++) {
     digitalWrite(ledPin, HIGH);
     delay(200);
     digitalWrite(ledPin, LOW);
     delay(200);
   }
+  Serial.println("PARPADEO COMPLETADO");
   server.sendHeader("Location", "/");
   server.send(303);
 }
@@ -49,13 +53,13 @@ void setup() {
   pinMode(ledPin, OUTPUT);
 
   WiFi.begin(ssid, password);
-  Serial.print("Connectant a la WiFi...");
+  Serial.print("Conectando a la WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
 
-  Serial.println("\nConnectat!");
+  Serial.println("\nConectado!");
   Serial.print("IP del servidor: ");
   Serial.println(WiFi.localIP());
 
