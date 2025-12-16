@@ -1,0 +1,39 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "Wifi_Dalmau";
+const char* password = "123456";
+
+// Exemple: API pública de temps
+const char* serverName = "http://worldtimeapi.org/api/timezone/Europe/Madrid";
+
+void setup() {
+  Serial.begin(115200);
+
+  WiFi.begin(ssid, password);
+  Serial.print("Connectant a WiFi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConnexió establerta!");
+}
+
+void loop() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(serverName);
+    int httpResponseCode = http.GET();
+
+    if (httpResponseCode > 0) {
+      String payload = http.getString();
+      Serial.println("Resposta del servidor:");
+      Serial.println(payload);
+    } else {
+      Serial.print("Error en la petició: ");
+      Serial.println(httpResponseCode);
+    }
+    http.end();
+  }
+  delay(10000); // Espera 10s abans de la següent petició
+}
